@@ -29,7 +29,6 @@
 
 .listItem {
     font-size: 20pt;
-    font-family: 'Segoe UI Light';
     padding: 40px 20px 0px 55px;
     background-color: white;
 }
@@ -38,7 +37,6 @@
     width: 400px;
     height: 80px;
     font-size: 20pt;
-    font-family: 'Segoe UI Light';
     display: -ms-grid;
     -ms-grid-rows: 80px;
     -ms-grid-columns: 45px 1fr;
@@ -72,7 +70,7 @@ progress.pullProgress {
     height: 45px;
     background-repeat: no-repeat;
     background-position: center center;
-    background-image: url('/images/arrow.svg');
+    background-image: url('../images/arrow.svg');
 }
 
 .loading .pullArrow {

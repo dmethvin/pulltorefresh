@@ -1,10 +1,6 @@
-﻿// For an introduction to the Blank template, see the following documentation:
-// http://go.microsoft.com/fwlink/?LinkId=232509
+﻿
 (function () {
     "use strict";
-
-    var app = WinJS.Application;
-    var activation = Windows.ApplicationModel.Activation;
 
     var _pullBoxHeight = 80;
     var _outerScroller;
@@ -29,12 +25,15 @@
         _outerScroller.addEventListener("scroll", onScroll);
 
         // Listen for panning events (different than scroll) and detect when we're in the over pan state
-        _outerScroller.addEventListener("MSManipulationStateChanged", onManipualationStateChanged);
+        _outerScroller.addEventListener("MSManipulationStateChanged", onManipulationStateChanged);
 
         // Populate the list
         loadItems();
 
     }
+	
+	// Initialize when the DOM is ready
+	$(init);
 
     function onScroll(e) {
         var rotationAngle = 180 * ((_pullBoxHeight - _outerScroller.scrollTop) / _pullBoxHeight) + 90;
@@ -48,20 +47,20 @@
         }
     };
 
-    function onManipualationStateChanged(e) {
+    function onManipulationStateChanged(e) {
         // Check to see if they lifted while pulled to the top
         if (e.currentState == MS_MANIPULATION_STATE_INERTIA &&
             e.lastState == MS_MANIPULATION_STATE_ACTIVE &&
             _outerScroller.scrollTop === 0) {
 
             // Change the loading state and prevent panning
-            WinJS.Utilities.addClass(_outerScroller, "loading");
+            $(_outerScroller).addClass("loading");
             _outerScroller.disabled = true;
             _pullLabel.innerText = "Loading...";
 
             refreshItemsAsync().then(function () {
                 // After the refresh, return to the default state
-                WinJS.Utilities.removeClass(_outerScroller, "loading");
+                $(_outerScroller).removeClass("loading");
                 _outerScroller.disabled = false;
 
                 // Scroll back to the top of the list
@@ -87,13 +86,13 @@
     }
 
     function refreshItemsAsync() {
-        return new WinJS.Promise(function (complete, error, progress) {
+        return new $.Deferred(function(deferred) {
             // Initiate the refresh (simulated delay with setTimeout)
             setTimeout(function () {
                 loadItems();
-                complete();
+                deferred.resolve();
             }, 2000);
-        });
+        }).promise();
     }
 
     function loadItems() {
@@ -111,9 +110,4 @@
         _innerScroller.innerHTML = items.innerHTML;
     }
 
-    app.onactivated = function (args) {
-        args.setPromise(WinJS.UI.processAll().then(init));
-    };
-
-    app.start();
-})();
+ })();
