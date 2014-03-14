@@ -7,6 +7,7 @@
     var _innerScroller;
     var _pullLabel;
     var _pullArrow;
+	var _wantRefresh;
 
     var MS_MANIPULATION_STATE_ACTIVE = 1; // A contact is touching the surface and interacting with content
     var MS_MANIPULATION_STATE_INERTIA = 2; // The content is still moving, but contact with the surface has ended 
@@ -37,18 +38,22 @@
         _pullArrow.style.transform = "rotate(" + rotationAngle + "deg)";
 
         // Change the label once you pull to the top
-        if (_outerScroller.scrollTop === 0) {
-            _pullLabel.innerText = "Release to refresh";
-        } else {
-            _pullLabel.innerText = "Pull to refresh";
-        }
+		var current = _outerScroller.scrollTop < 5;
+        if (current != _wantRefresh ) {
+			if (current) {
+				_pullLabel.innerText = "Release to refresh";
+			} else {
+				_pullLabel.innerText = "Pull to refresh";
+			}
+			_wantRefresh = current;
+		}
     };
 
     function onManipulationStateChanged(e) {
         // Check to see if they lifted while pulled to the top
         if (e.currentState == MS_MANIPULATION_STATE_INERTIA &&
             e.lastState == MS_MANIPULATION_STATE_ACTIVE &&
-            _outerScroller.scrollTop === 0) {
+            _wantRefresh) {
 
             // Change the loading state and prevent panning
             _outerScroller.classList.add("loading");
@@ -87,7 +92,7 @@
 		setTimeout(function () {
 			loadItems();
 			callback();
-		}, 1500+Math.random()*1500);
+		}, 1500+Math.random()*1000);
     }
 
     function loadItems() {
