@@ -31,9 +31,6 @@
         loadItems();
 
     }
-	
-	// Initialize when the DOM is ready
-	$(init);
 
     function onScroll(e) {
         var rotationAngle = 180 * ((_pullBoxHeight - _outerScroller.scrollTop) / _pullBoxHeight) + 90;
@@ -54,13 +51,13 @@
             _outerScroller.scrollTop === 0) {
 
             // Change the loading state and prevent panning
-            $(_outerScroller).addClass("loading");
+            _outerScroller.classList.add("loading");
             _outerScroller.disabled = true;
             _pullLabel.innerText = "Loading...";
 
-            refreshItemsAsync().then(function () {
+            refreshItems(function () {
                 // After the refresh, return to the default state
-                $(_outerScroller).removeClass("loading");
+                _outerScroller.classList.remove("loading");
                 _outerScroller.disabled = false;
 
                 // Scroll back to the top of the list
@@ -85,14 +82,12 @@
 
     }
 
-    function refreshItemsAsync() {
-        return new $.Deferred(function(deferred) {
-            // Initiate the refresh (simulated delay with setTimeout)
-            setTimeout(function () {
-                loadItems();
-                deferred.resolve();
-            }, 2000);
-        }).promise();
+    function refreshItems(callback) {
+		// Initiate the refresh (simulated delay with setTimeout)
+		setTimeout(function () {
+			loadItems();
+			callback();
+		}, 1500+Math.random()*1500);
     }
 
     function loadItems() {
@@ -110,4 +105,5 @@
         _innerScroller.innerHTML = items.innerHTML;
     }
 
+	window.addEventListener("DOMContentLoaded", init, false);
  })();
